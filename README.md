@@ -86,11 +86,12 @@ Python replication for Sutton & Barto's book [*Reinforcement Learning: An Introd
 
 
 # Environment
-* python 3.6 
+* python 3.9
 * numpy
-* matplotlib
+* [matplotlib](https://matplotlib.org)
 * [seaborn](https://seaborn.pydata.org/index.html)
 * [tqdm](https://pypi.org/project/tqdm/)
+* [gymnasium](https://gymnasium.farama.org)
 
 # Usage
 > All files are self-contained
