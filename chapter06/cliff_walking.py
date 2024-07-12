@@ -225,6 +225,4 @@ def figure_6_4(episodes=500, runs=1000, saving_format='.png'):
 
 if __name__ == '__main__':
     environment = gym.make('CliffWalking-v0')
-    # figure_6_4()
-    # figure_6_6()
     figure_6_4()
