@@ -2,9 +2,9 @@
 
 [![Build Status](https://travis-ci.org/ShangtongZhang/reinforcement-learning-an-introduction.svg?branch=master)](https://travis-ci.org/ShangtongZhang/reinforcement-learning-an-introduction)
 
-Python replication for Sutton & Barto's book [*Reinforcement Learning: An Introduction (2nd Edition)*](http://incompleteideas.net/book/the-book-2nd.html)
+Python replication for Sutton & Barto's book [*Reinforcement Learning: An Introduction (2nd Edition)*](http://incompleteideas.net/book/the-book-2nd.html) using [Gymnasium](https://gymnasium.farama.org/).
+Forked from [Shangtong Zhang](https://github.com/ShangtongZhang/reinforcement-learning-an-introduction)'s repository and altered to use gym environments.
 
-> If you have any confusion about the code or want to report a bug, please open an issue instead of emailing me directly, and unfortunately I do not have exercise answers for the book.
 
 # Contents 
 
@@ -38,7 +38,7 @@ Python replication for Sutton & Barto's book [*Reinforcement Learning: An Introd
 1. [Example 6.2: Random walk](https://raw.githubusercontent.com/ShangtongZhang/reinforcement-learning-an-introduction/master/images/example_6_2.png)
 2. [Figure 6.2: Batch updating](https://raw.githubusercontent.com/ShangtongZhang/reinforcement-learning-an-introduction/master/images/figure_6_2.png)
 3. [Figure 6.3: Sarsa applied to windy grid world](https://raw.githubusercontent.com/ShangtongZhang/reinforcement-learning-an-introduction/master/images/figure_6_3.png)
-4. [Figure 6.4: The cliff-walking task](https://raw.githubusercontent.com/ShangtongZhang/reinforcement-learning-an-introduction/master/images/figure_6_4.png)
+4. [Figure 6.4: The cliff-walking task](https://github.com/RamtinMoslemi/reinforcement-learning-an-introduction/blob/master/images/chapter06/figure_6_4.png)
 5. [Figure 6.6: Interim and asymptotic performance of TD control methods](https://raw.githubusercontent.com/ShangtongZhang/reinforcement-learning-an-introduction/master/images/figure_6_6.png)
 6. [Figure 6.7: Comparison of Q-learning and Double Q-learning](https://raw.githubusercontent.com/ShangtongZhang/reinforcement-learning-an-introduction/master/images/figure_6_7.png)
 
