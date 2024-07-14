@@ -7,9 +7,9 @@
 #######################################################################
 
 import numpy as np
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
+import gymnasium as gym
+from windy_gridworld_env import WindyGridworld
+from matplotlib import pyplot as plt
 
 # world height
 WORLD_HEIGHT = 7
@@ -22,9 +22,9 @@ WIND = [0, 0, 0, 1, 1, 1, 2, 2, 1, 0]
 
 # possible actions
 ACTION_UP = 0
-ACTION_DOWN = 1
-ACTION_LEFT = 2
-ACTION_RIGHT = 3
+ACTION_DOWN = 2
+ACTION_LEFT = 3
+ACTION_RIGHT = 1
 
 # probability for exploration
 EPSILON = 0.1
@@ -39,72 +39,65 @@ START = [3, 0]
 GOAL = [3, 7]
 ACTIONS = [ACTION_UP, ACTION_DOWN, ACTION_LEFT, ACTION_RIGHT]
 
-def step(state, action):
-    i, j = state
-    if action == ACTION_UP:
-        return [max(i - 1 - WIND[j], 0), j]
-    elif action == ACTION_DOWN:
-        return [max(min(i + 1 - WIND[j], WORLD_HEIGHT - 1), 0), j]
-    elif action == ACTION_LEFT:
-        return [max(i - WIND[j], 0), max(j - 1, 0)]
-    elif action == ACTION_RIGHT:
-        return [max(i - WIND[j], 0), min(j + 1, WORLD_WIDTH - 1)]
-    else:
-        assert False
+# where to save the images
+image_dir = '../images/chapter06'
 
-# play for an episode
-def episode(q_value):
-    # track the total time steps in this episode
-    time = 0
 
-    # initialize state
-    state = START
+def q_learning(n_episodes: int) -> (np.ndarray, np.ndarray):
+    """Q-Learning: runs the Q-Learning algorithm on the Windy Gridworld environment.
 
-    # choose an action based on epsilon-greedy algorithm
-    if np.random.binomial(1, EPSILON) == 1:
-        action = np.random.choice(ACTIONS)
-    else:
-        values_ = q_value[state[0], state[1], :]
-        action = np.random.choice([action_ for action_, value_ in enumerate(values_) if value_ == np.max(values_)])
+    Args:
+        n_episodes (integer): the number of episodes we train the model
 
-    # keep going until get to the goal state
-    while state != GOAL:
-        next_state = step(state, action)
-        if np.random.binomial(1, EPSILON) == 1:
-            next_action = np.random.choice(ACTIONS)
-        else:
-            values_ = q_value[next_state[0], next_state[1], :]
-            next_action = np.random.choice([action_ for action_, value_ in enumerate(values_) if value_ == np.max(values_)])
+    Returns:
+        episode_rewards (ndarray): the sum of rewards in each episode
+        q (ndarray): the trained Q-values
+    """
+    episode_rewards = np.empty(n_episodes)
 
-        # Sarsa update
-        q_value[state[0], state[1], action] += \
-            ALPHA * (REWARD + q_value[next_state[0], next_state[1], next_action] -
-                     q_value[state[0], state[1], action])
-        state = next_state
-        action = next_action
-        time += 1
-    return time
+    env = WindyGridworld()
+    q = np.zeros(shape=(WORLD_WIDTH * WORLD_HEIGHT, len(ACTIONS)))
+    for episode_i in range(n_episodes):
+        state, info = env.reset()
+        episode_reward_sum, terminal = 0, False
+        while not terminal:
+            if np.random.random() > EPSILON:  # greedy action
+                action = np.argmax(q[state])
+            else:  # random action
+                action = env.action_space.sample()
+            next_state, reward, terminated, truncated, info = env.step(action)
+            q[state, action] += ALPHA * (reward + np.max(q[next_state]) - q[state, action])
+            state = next_state
+            episode_reward_sum += reward
+            terminal = terminated or truncated
+        episode_rewards[episode_i] = episode_reward_sum
+    return episode_rewards, q
 
-def figure_6_3():
-    q_value = np.zeros((WORLD_HEIGHT, WORLD_WIDTH, 4))
-    episode_limit = 500
 
-    steps = []
-    ep = 0
-    while ep < episode_limit:
-        steps.append(episode(q_value))
-        # time = episode(q_value)
-        # episodes.extend([ep] * time)
-        ep += 1
+def greedy_display(q: np.ndarray) -> None:
+    env = WindyGridworld(render_mode='human')
+    state, info = env.reset()
+    while True:
+        action = np.argmax(q[state])
+        state, reward, terminated, truncated, info = env.step(action)
+        if truncated or terminated:
+            break
 
-    steps = np.add.accumulate(steps)
+
+def figure_6_3(saving_format='.png'):
+    steps, q_value = q_learning(500)
+
+    steps = np.add.accumulate(-steps)
 
     plt.plot(steps, np.arange(1, len(steps) + 1))
     plt.xlabel('Time steps')
     plt.ylabel('Episodes')
 
-    plt.savefig('../images/figure_6_3.png')
+    plt.savefig(image_dir + 'figure_6_3' + saving_format)
     plt.close()
+
+    # show video of agent playing according to the best policy
+    greedy_display(q_value)
 
     # display the optimal policy
     optimal_policy = []
@@ -114,20 +107,20 @@ def figure_6_3():
             if [i, j] == GOAL:
                 optimal_policy[-1].append('G')
                 continue
-            bestAction = np.argmax(q_value[i, j, :])
-            if bestAction == ACTION_UP:
+            best_action = np.argmax(q_value[i * WORLD_WIDTH + j, :])
+            if best_action == ACTION_UP:
                 optimal_policy[-1].append('U')
-            elif bestAction == ACTION_DOWN:
+            elif best_action == ACTION_DOWN:
                 optimal_policy[-1].append('D')
-            elif bestAction == ACTION_LEFT:
+            elif best_action == ACTION_LEFT:
                 optimal_policy[-1].append('L')
-            elif bestAction == ACTION_RIGHT:
+            elif best_action == ACTION_RIGHT:
                 optimal_policy[-1].append('R')
     print('Optimal policy is:')
     for row in optimal_policy:
         print(row)
     print('Wind strength for each column:\n{}'.format([str(w) for w in WIND]))
 
+
 if __name__ == '__main__':
     figure_6_3()
-
