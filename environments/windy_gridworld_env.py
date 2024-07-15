@@ -33,6 +33,7 @@ ACTION_RIGHT = 1
 
 
 class WindyGridworld(MiniGridEnv):
+    metadata = {'render_fps': 4}
 
     def __init__(self, **kwargs):
         self.agent_start_pos = START
@@ -54,11 +55,12 @@ class WindyGridworld(MiniGridEnv):
 
         self.action_space = spaces.Discrete(4)
 
-    def reset(self, *, seed: int | None = None, options: dict[str, Any] | None = None,) -> tuple[ObsType, dict[str, Any]]:
+    def reset(self, *, seed: int | None = None, options: dict[str, Any] | None = None,) -> (
+            tuple)[ObsType, dict[str, Any]]:
         super().reset()
         return self.observe(), {}
 
-    def wind_move(self):
+    def wind_move(self) -> int:
         return self.wind[self.agent_pos[0]]
 
     def step(self, action: ActType) -> tuple[ObsType, SupportsFloat, bool, bool, dict[str, Any]]:
@@ -94,7 +96,7 @@ class WindyGridworld(MiniGridEnv):
 
         return self.observe(), self.reward, terminated, truncated, {}
 
-    def observe(self):
+    def observe(self) -> int:
         return self.agent_pos[0] + self.agent_pos[1] * self.width
 
     @staticmethod
