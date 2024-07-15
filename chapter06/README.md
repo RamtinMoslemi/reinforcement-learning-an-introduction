@@ -34,3 +34,9 @@ Each model has been trained for 500 episodes and results have been averaged over
 |   <img src="https://github.com/RamtinMoslemi/reinforcement-learning-an-introduction/blob/master/images/chapter06/q_learning_optimal_path.png" width="720">   |   <img src="https://github.com/RamtinMoslemi/reinforcement-learning-an-introduction/blob/master/images/chapter06/q_learning_cliff_walking.gif">   |
 |     <img src="https://github.com/RamtinMoslemi/reinforcement-learning-an-introduction/blob/master/images/chapter06/sarsa_optimal_path.png" width="720">      |     <img src="https://github.com/RamtinMoslemi/reinforcement-learning-an-introduction/blob/master/images/chapter06/sarsa_cliff_walking.gif">      |
 | <img src="https://github.com/RamtinMoslemi/reinforcement-learning-an-introduction/blob/master/images/chapter06/expected_sarsa_optimal_path.png" width="720"> | <img src="https://github.com/RamtinMoslemi/reinforcement-learning-an-introduction/blob/master/images/chapter06/expected_sarsa_cliff_walking.gif"> |
+
+### figure 6.6
+Interim and asymptotic performance of TD control methods on the cliff walking task as a function of $\alpha$. All algorithms used an $\varepsilon$-greedy policy with $\varepsilon = 0.1$. Asymptotic performance is an average over 10,000 episodes whereas interim performance is an average over the first 100 episodes. These data are averages of over 1,000 and 10 runs for the interim and asymptotic cases respectively.
+| Figure 6.6 | 
+| :----------------------: |
+| ![](https://github.com/RamtinMoslemi/reinforcement-learning-an-introduction/blob/master/images/chapter06/figure_6_6.png) |
