@@ -8,7 +8,7 @@ Each model has been trained for 500 episodes and results have been averaged over
 
 | Sum of rewards during episodes|
 | :---------------------------: |
-| <img src="https://github.com/RamtinMoslemi/reinforcement-learning-an-introduction/blob/master/images/chapter06/figure_6_4.png" width="583" height="438"> | 
+| <img src="https://github.com/RamtinMoslemi/reinforcement-learning-an-introduction/blob/master/images/chapter06/figure_6_4.png" width="583"> | 
 
 #### Questions (just for fun):
 - Why do the Q-learning rewards hover around -50 after convergence?
