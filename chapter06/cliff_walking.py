@@ -10,7 +10,7 @@ import numpy as np
 import seaborn as sns
 import gymnasium as gym
 from matplotlib import pyplot as plt
-from tqdm import tqdm
+from tqdm import trange
 from utils import visualize
 
 # probability for exploration
@@ -50,7 +50,7 @@ def plot_heatmap(q_values, algorithm_name, saving_format='.png'):
     im.figure.savefig(f'{IMAGE_DIR}{algorithm_name}_optimal_path{saving_format}', bbox_inches='tight', dpi=200)
 
 
-def choose_action(state: int, q_values: np.ndarray, env: gym.Env) -> int:
+def choose_action(state: int, q_values: np.ndarray, env: gym.Env, epsilon: float = EPSILON) -> int:
     """Epsilon-greedy policy: selects the maximum value action with probability (1-epsilon) and selects randomly with
     epsilon probability.
 
@@ -58,23 +58,26 @@ def choose_action(state: int, q_values: np.ndarray, env: gym.Env) -> int:
         state (integer): current state
         q_values (ndarray): current value function of shape (n_states, n_actions)
         env (Env): gymnasium environment
+        epsilon (float): exploration parameter between 0 and 1
 
     Returns:
         action (integer): the chosen action
     """
-    if np.random.random() > EPSILON:  # greedy action
+    if np.random.random() > epsilon:  # greedy action
         action = np.argmax(q_values[state])
     else:  # random action
         action = env.action_space.sample()
     return action
 
 
-def q_learning(n_episodes: int, env: gym.Env) -> (np.ndarray, np.ndarray):
+def q_learning(n_episodes: int, env: gym.Env, alpha: float = ALPHA, gamma: float = GAMMA) -> (np.ndarray, np.ndarray):
     """Q-Learning: runs the Q-learning algorithm with epsilon-greedy policy on gym environment.
 
     Args:
         n_episodes (integer): the number of episodes we train the model
         env (Env): gym environment
+        alpha (float): step size parameter between 0 and 1
+        gamma (float): discount factor between 0 and 1
 
     Returns:
         episode_rewards (ndarray): the sum of rewards in each episode
@@ -90,7 +93,7 @@ def q_learning(n_episodes: int, env: gym.Env) -> (np.ndarray, np.ndarray):
         while not terminal:
             action = choose_action(state, q, env)
             next_state, reward, terminated, truncated, info = env.step(action)
-            q[state, action] += ALPHA * (reward + GAMMA * np.max(q[next_state]) - q[state, action])
+            q[state, action] += alpha * (reward + gamma * np.max(q[next_state]) - q[state, action])
             state = next_state
             episode_reward_sum += reward
             terminal = terminated or truncated
@@ -98,12 +101,14 @@ def q_learning(n_episodes: int, env: gym.Env) -> (np.ndarray, np.ndarray):
     return episode_rewards, q
 
 
-def sarsa(n_episodes: int, env: gym.Env) -> (np.array, np.ndarray):
+def sarsa(n_episodes: int, env: gym.Env, alpha: float = ALPHA, gamma: float = GAMMA) -> (np.array, np.ndarray):
     """Sarsa: runs the Sarsa algorithm with epsilon-greedy policy on gym environment.
 
     Args:
         n_episodes (integer): the number of episodes we train the model
         env (Env): gymnasium environment
+        alpha (float): step size parameter between 0 and 1
+        gamma (float): discount factor between 0 and 1
 
     Returns:
         episode_rewards (ndarray): the sum of rewards in each episode
@@ -120,7 +125,7 @@ def sarsa(n_episodes: int, env: gym.Env) -> (np.array, np.ndarray):
         while not terminal:
             next_state, reward, terminated, truncated, info = env.step(action)
             next_action = choose_action(next_state, q, env)
-            q[state, action] += ALPHA * (reward + GAMMA * q[next_state, next_action] - q[state, action])
+            q[state, action] += alpha * (reward + gamma * q[next_state, next_action] - q[state, action])
             state, action = next_state, next_action
             episode_reward_sum += reward
             terminal = terminated or truncated
@@ -128,12 +133,14 @@ def sarsa(n_episodes: int, env: gym.Env) -> (np.array, np.ndarray):
     return episode_rewards, q
 
 
-def expected_sarsa(n_episodes: int, env: gym.Env) -> (np.array, np.ndarray):
+def expected_sarsa(n_episodes: int, env: gym.Env, alpha: float = ALPHA, gamma: float = GAMMA) -> (np.array, np.ndarray):
     """Expected Sarsa: runs the Expected Sarsa algorithm with epsilon-greedy policy on gym environment.
 
     Args:
         n_episodes (integer): the number of episodes we train the model
         env (Env): gymnasium environment
+        alpha (float): step size parameter between 0 and 1
+        gamma (float): discount factor between 0 and 1
 
     Returns:
         episode_rewards (ndarray): the sum of rewards in each episode
@@ -150,7 +157,7 @@ def expected_sarsa(n_episodes: int, env: gym.Env) -> (np.array, np.ndarray):
             action = choose_action(state, q, env)
             next_state, reward, terminated, truncated, info = env.step(action)
             q_expected = (1 - EPSILON) * np.max(q[next_state]) + EPSILON * np.mean(q[next_state])
-            q[state, action] += ALPHA * (reward + GAMMA * q_expected - q[state, action])
+            q[state, action] += alpha * (reward + gamma * q_expected - q[state, action])
             state = next_state
             episode_reward_sum += reward
             terminal = terminated or truncated
@@ -167,7 +174,7 @@ def figure_6_4(algorithms=None, episodes=500, runs=1000, saving_format='.png'):
     q = {algorithm.__name__: np.zeros(shape=q_shape) for algorithm in algorithms}
 
     # repeat for multiple runs to achieve smoother results
-    for _ in tqdm(range(runs)):
+    for _ in trange(runs):
         for algorithm in algorithms:
             reward, q_value = algorithm(episodes, CLIFF_WALKING)
             rewards[algorithm.__name__] += reward
@@ -195,55 +202,52 @@ def figure_6_4(algorithms=None, episodes=500, runs=1000, saving_format='.png'):
         plot_heatmap(q[algorithm.__name__], algorithm.__name__)
         visualize.make_gif(render_env, q[algorithm.__name__], f'{IMAGE_DIR}{algorithm.__name__}_cliff_walking')
 
-# Due to limited capacity of calculation of my machine, I can't complete this experiment
-# with 100,000 episodes and 50,000 runs to get the fully averaged performance
-# However even I only play for 1,000 episodes and 10 runs, the curves looks still good.
-def figure_6_6():
-    step_sizes = np.arange(0.1, 1.1, 0.1)
-    episodes = 1000
-    runs = 10
 
-    ASY_SARSA = 0
-    ASY_EXPECTED_SARSA = 1
-    ASY_QLEARNING = 2
-    INT_SARSA = 3
-    INT_EXPECTED_SARSA = 4
-    INT_QLEARNING = 5
-    methods = range(0, 6)
+def figure_6_6(interim_runs=50_000, interim_episodes=100, asymptotic_runs=10, asymptotic_episodes=100_000,
+               delta=0.05, save_format='.png'):
+    step_sizes = np.arange(0.1, 1.0 + delta, delta)
+    algorithms = [q_learning, sarsa, expected_sarsa]
+    interim_performance = {algorithm.__name__: np.zeros(len(step_sizes)) for algorithm in algorithms}
+    asymptotic_performance = {algorithm.__name__: np.zeros(len(step_sizes)) for algorithm in algorithms}
 
-    performance = np.zeros((6, len(step_sizes)))
-    for run in range(runs):
-        for ind, step_size in tqdm(list(zip(range(0, len(step_sizes)), step_sizes))):
-            q_sarsa = np.zeros((WORLD_HEIGHT, WORLD_WIDTH, 4))
-            q_expected_sarsa = np.copy(q_sarsa)
-            q_q_learning = np.copy(q_sarsa)
-            for ep in range(episodes):
-                sarsa_reward = sarsa(q_sarsa, expected=False, step_size=step_size)
-                expected_sarsa_reward = sarsa(q_expected_sarsa, expected=True, step_size=step_size)
-                q_learning_reward = q_learning(q_q_learning, step_size=step_size)
-                performance[ASY_SARSA, ind] += sarsa_reward
-                performance[ASY_EXPECTED_SARSA, ind] += expected_sarsa_reward
-                performance[ASY_QLEARNING, ind] += q_learning_reward
+    # Interim performance
+    for _ in trange(interim_runs):
+        for idx, step_size in zip(range(len(step_sizes)), step_sizes):
+            for algorithm in algorithms:
+                reward, _ = algorithm(interim_episodes, CLIFF_WALKING, alpha=step_size)
+                interim_performance[algorithm.__name__][idx] += np.mean(reward) / interim_runs
 
-                if ep < 100:
-                    performance[INT_SARSA, ind] += sarsa_reward
-                    performance[INT_EXPECTED_SARSA, ind] += expected_sarsa_reward
-                    performance[INT_QLEARNING, ind] += q_learning_reward
+    # Asymptotic performance
+    for _ in trange(asymptotic_runs):
+        for idx, step_size in zip(range(len(step_sizes)), step_sizes):
+            for algorithm in algorithms:
+                reward, _ = algorithm(asymptotic_episodes, CLIFF_WALKING, alpha=step_size)
+                asymptotic_performance[algorithm.__name__][idx] += np.mean(reward) / asymptotic_runs
 
-    performance[:3, :] /= episodes * runs
-    performance[3:, :] /= 100 * runs
-    labels = ['Asymptotic Sarsa', 'Asymptotic Expected Sarsa', 'Asymptotic Q-Learning',
-              'Interim Sarsa', 'Interim Expected Sarsa', 'Interim Q-Learning']
-
-    for method, label in zip(methods, labels):
-        plt.plot(step_sizes, performance[method, :], label=label)
-    plt.xlabel('alpha')
-    plt.ylabel('reward per episode')
+    # plotting
+    markers = {'q_learning': 's', 'sarsa': 'v', 'expected_sarsa': 'x'}
+    colors = {'q_learning': 'black', 'sarsa': 'blue', 'expected_sarsa': 'red'}
+    plt.figure(figsize=(12, 8))
+    for algorithm in algorithms:
+        alg = algorithm.__name__
+        # Interim performance
+        plt.plot(step_sizes, interim_performance[alg], marker=markers[alg], linestyle='dotted',
+                 label=f'Interim Performance {ALGORITHMS[alg]}', color=colors[alg])
+        # asymptotic performance
+        plt.plot(step_sizes, asymptotic_performance[alg], marker=markers[alg],
+                 label=f'Asymptotic Performance {ALGORITHMS[alg]}', color=colors[alg])
+    plt.xlabel(r'$\alpha$')
+    plt.xticks(np.arange(0.1, 1.1, 0.1))
+    plt.ylabel('Sum of rewards per episode')
+    plt.ylim([-150, 0])
     plt.legend()
-
-    plt.savefig('../images/figure_6_6.png')
+    plt.savefig(IMAGE_DIR + 'figure_6_6_' + save_format, bbox_inches='tight', dpi=200)
     plt.close()
 
 
 if __name__ == '__main__':
     figure_6_4(runs=1000)
+    # Due to limited capacity of calculation of my machine, I can't complete this experiment with 100,000 episodes and
+    # 50,000 runs to get the fully averaged performance, However even I only play for 10,000 episodes and 10 runs,
+    # the curves looks still good.
+    figure_6_6(interim_runs=1000, asymptotic_runs=10, asymptotic_episodes=10_000)
