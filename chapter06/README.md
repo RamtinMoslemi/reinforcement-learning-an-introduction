@@ -1,5 +1,18 @@
 # Chapter 6
 
+## [Windy Gridworld](https://github.com/RamtinMoslemi/reinforcement-learning-an-introduction/blob/master/environments/windy_gridworld_env.py)
+
+### figure 6.3
+Plots are made using $\varepsilon = 0.1$ (for $\varepsilon$-greedy action selection), step size $\alpha=0.5$ and discount factor $\gamma = 1$. 
+
+| Figure 6.3 | Optimal Policy |
+|:----------:| :------------: |
+| ![figure_6_3](https://github.com/RamtinMoslemi/reinforcement-learning-an-introduction/blob/master/images/chapter06/figure_6_3.png) | <img src="https://github.com/RamtinMoslemi/reinforcement-learning-an-introduction/blob/master/images/chapter06/windy_gridworld_optimal_path.png" width="720"> |
+
+| Greedy Policy Visualized | 
+| :----------------------: |
+| ![](https://github.com/RamtinMoslemi/reinforcement-learning-an-introduction/blob/master/images/chapter06/q_learning_windy_grid_world.gif) |
+
 ## [Cliff Walking](https://gymnasium.farama.org/environments/toy_text/cliff_walking/)
 
 ### figure 6.4
