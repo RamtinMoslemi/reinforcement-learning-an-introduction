@@ -8,7 +8,7 @@ Each model has been trained for 500 episodes and results have been averaged over
 
 | Sum of rewards during episodes|
 | :---------------------------: |
-| ![](https://github.com/RamtinMoslemi/reinforcement-learning-an-introduction/blob/master/images/chapter06/figure_6_4.png) | 
+| <img src="https://github.com/RamtinMoslemi/reinforcement-learning-an-introduction/blob/master/images/chapter06/figure_6_4.png" width="583" height="438"> | 
 
 #### Questions (just for fun):
 - Why do the Q-learning rewards hover around -50 after convergence?
@@ -16,8 +16,8 @@ Each model has been trained for 500 episodes and results have been averaged over
 - Why do the Q-learning rewards seem more noisy than the Sarsa rewards?
 
 
-| Optimal Paths |
-| :-----------: |
-| ![](https://github.com/RamtinMoslemi/reinforcement-learning-an-introduction/blob/master/images/chapter06/Optimal%20Q-Learning%20path%20for%20Cliff%20Walking.png) |
-| ![](https://github.com/RamtinMoslemi/reinforcement-learning-an-introduction/blob/master/images/chapter06/Optimal%20Sarsa%20path%20for%20Cliff%20Walking.png) |
+| Q-learning | Sarsa | 
+| :--------: | :---: |
+| ![](https://github.com/RamtinMoslemi/reinforcement-learning-an-introduction/blob/master/images/chapter06/Optimal%20Q-Learning%20path%20for%20Cliff%20Walking.png) | ![](https://github.com/RamtinMoslemi/reinforcement-learning-an-introduction/blob/master/images/chapter06/Optimal%20Sarsa%20path%20for%20Cliff%20Walking.png) |
+| ![](https://github.com/RamtinMoslemi/reinforcement-learning-an-introduction/blob/master/images/chapter06/q-learning_cliff_walking.gif) | ![](https://github.com/RamtinMoslemi/reinforcement-learning-an-introduction/blob/master/images/chapter06/sarsa_cliff_walking.gif) |
 
