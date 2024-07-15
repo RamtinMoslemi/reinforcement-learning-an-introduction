@@ -4,9 +4,6 @@ import cv2
 from PIL import Image
 
 
-DEFAULT_DIR = '../images/'
-
-
 def greedy(q_value, state):
     return np.argmax(q_value[state])
 
@@ -21,7 +18,7 @@ def show_policy(env, q_value, act=greedy):
     env.close()
 
 
-def make_mp4(env, q_value, name='file_name', act=greedy, image_dir=DEFAULT_DIR):
+def make_mp4(env, q_value, name='file_name', act=greedy):
     assert env.render_mode == 'rgb_array'
     frames = list()
     state, info = env.reset()
@@ -36,7 +33,7 @@ def make_mp4(env, q_value, name='file_name', act=greedy, image_dir=DEFAULT_DIR):
     height, width, layers = frames[0].shape
     # Define the codec and create VideoWriter object
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # 'mp4v' for .mp4, 'XVID' for .avi
-    video = cv2.VideoWriter(image_dir + name + '.mp4', fourcc, env.metadata['render_fps'], (width, height))
+    video = cv2.VideoWriter(name + '.mp4', fourcc, env.metadata['render_fps'], (width, height))
 
     for frame in frames:
         # Convert RGB to BGR for OpenCV
@@ -46,7 +43,7 @@ def make_mp4(env, q_value, name='file_name', act=greedy, image_dir=DEFAULT_DIR):
     video.release()
 
 
-def make_gif(env, q_value, name='file_name', act=greedy, image_dir=DEFAULT_DIR):
+def make_gif(env, q_value, name='file_name', act=greedy):
     assert env.render_mode == 'rgb_array'
     frames = []
     state, info = env.reset()
@@ -65,7 +62,7 @@ def make_gif(env, q_value, name='file_name', act=greedy, image_dir=DEFAULT_DIR):
     pil_frames = [Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)) for frame in frames]
 
     # Save as GIF
-    gif_path = f"{image_dir}{name}.gif"
+    gif_path = f"{name}.gif"
     duration = 1000 // env.metadata['render_fps']
     pil_frames[0].save(
         gif_path, save_all=True, append_images=pil_frames[1:], loop=0, duration=duration
