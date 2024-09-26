@@ -39,8 +39,8 @@ Forked from [Shangtong Zhang](https://github.com/ShangtongZhang/reinforcement-le
 2. [Figure 6.2: Batch updating](https://raw.githubusercontent.com/ShangtongZhang/reinforcement-learning-an-introduction/master/images/figure_6_2.png)
 3. [Figure 6.3: Sarsa applied to windy grid world](https://raw.githubusercontent.com/ShangtongZhang/reinforcement-learning-an-introduction/master/images/figure_6_3.png)
 4. [Figure 6.4: The cliff-walking task](https://github.com/RamtinMoslemi/reinforcement-learning-an-introduction/blob/master/images/chapter06/figure_6_4.png)
-5. [Figure 6.6: Interim and asymptotic performance of TD control methods](https://raw.githubusercontent.com/ShangtongZhang/reinforcement-learning-an-introduction/master/images/figure_6_6.png)
-6. [Figure 6.7: Comparison of Q-learning and Double Q-learning](https://raw.githubusercontent.com/ShangtongZhang/reinforcement-learning-an-introduction/master/images/figure_6_7.png)
+5. [Figure 6.6: Interim and asymptotic performance of TD control methods](https://raw.githubusercontent.com/RamtinMoslemi/reinforcement-learning-an-introduction/master/images/chapter06/figure_6_6.png)
+7. [Figure 6.7: Comparison of Q-learning and Double Q-learning](https://raw.githubusercontent.com/ShangtongZhang/reinforcement-learning-an-introduction/master/images/figure_6_7.png)
 
 ### Chapter 7
 1. [Figure 7.2: Performance of n-step TD methods on 19-state random walk](https://raw.githubusercontent.com/ShangtongZhang/reinforcement-learning-an-introduction/master/images/figure_7_2.png)
